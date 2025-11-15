@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
+import AnimatedNumber from './AnimatedNumber'
 
 const sectors = [
   {
@@ -197,7 +198,7 @@ export default function Sectors() {
                   {sector.icon}
                 </motion.div>
                 <div className="text-4xl font-heading font-bold text-primary-red mb-2">
-                  {sector.stat}
+                  <AnimatedNumber value={sector.stat} duration={2000} />
                 </div>
                 <p className="font-body text-sm text-graphite/60 mb-2">
                   {sector.statLabel}

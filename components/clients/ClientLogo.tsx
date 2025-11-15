@@ -5,9 +5,14 @@ import { useState } from 'react'
 import type { ClientItem } from '@/data/clients'
 
 export default function ClientLogo({ item }: { item: ClientItem }) {
-  const [err, setErr] = useState(false)
-  const showImage = !!item.domain && !err
-  const src = item.domain ? `https://logo.clearbit.com/${item.domain}?size=256` : ''
+  const [localErr, setLocalErr] = useState(false)
+  const [clearbitErr, setClearbitErr] = useState(false)
+
+  // Priority: local logo > Clearbit > text fallback
+  const hasLocalLogo = !!item.logo && !localErr
+  const hasClearbit = !!item.domain && !clearbitErr && !hasLocalLogo
+  const localSrc = item.logo ? `/images/${item.logo}` : ''
+  const clearbitSrc = item.domain ? `https://logo.clearbit.com/${item.domain}?size=256` : ''
 
   // uniform card
   const Tile: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -25,8 +30,8 @@ export default function ClientLogo({ item }: { item: ClientItem }) {
     </div>
   )
 
-  // FULL NAME fallback (multi-line, no truncation)
-  if (!showImage) {
+  // Text fallback (if no logos available)
+  if (!hasLocalLogo && !hasClearbit) {
     return (
       <Tile>
         <span
@@ -43,9 +48,11 @@ export default function ClientLogo({ item }: { item: ClientItem }) {
     )
   }
 
+  // Use local logo if available, otherwise Clearbit
+  const imgSrc = hasLocalLogo ? localSrc : clearbitSrc
   const img = (
     <Image
-      src={src}
+      src={imgSrc}
       alt={`${item.name} logo`}
       width={260}
       height={120}
@@ -55,7 +62,14 @@ export default function ClientLogo({ item }: { item: ClientItem }) {
         grayscale opacity-80 transition
         hover:grayscale-0 hover:opacity-100
       "
-      onError={() => setErr(true)}
+      onError={() => {
+        if (hasLocalLogo) {
+          setLocalErr(true)
+          // Will fallback to Clearbit or text
+        } else {
+          setClearbitErr(true)
+        }
+      }}
       priority={false}
     />
   )
