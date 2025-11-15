@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Experts - Professional IT Solutions</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- three.js CDN for 3D Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base font */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Logo Marquee Animation */
+        @keyframes scroll-x {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+        .animate-scroll-x {
+            animation: scroll-x 40s linear infinite;
+        }
+        
+        /* Scroll-in Fade-Up Animation */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Hero Height */
+        #hero-section {
+            height: 90vh;
+            max-height: 800px;
+        }
+
+        /* 3D Canvas */
+        #hero-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* CTA Canvas */
+        #cta-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* Mobile menu toggle icon */
+        .hamburger-line {
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger-active > span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger-active > span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-active > span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+        
+        /* New Flip Card Styles */
+        .flip-card-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 350px; /* Fixed height for consistent grid */
+            cursor: pointer;
+        }
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s;
+            transform-style: preserve-3d;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+        }
+        .flip-card.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 0.75rem; /* rounded-xl */
+            overflow: hidden;
+        }
+        .flip-card-front {
+            background-color: white;
+            color: black;
+            display: flex;
+            flex-direction: column;
+        }
+        .flip-card-back {
+            background-color: #1F2937; /* gray-800 */
+            color: white;
+            transform: rotateY(180deg);
+            padding: 1.5rem; /* p-6 */
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800 overflow-x-hidden">
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-md">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-2">
+                    <!-- Inline SVG Logo based on your design -->
+                    <svg width="220" height="65" viewBox="0 0 40 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.9999 0L29.3204 5.40817V16.2245L38.6409 21.6327L29.3204 27.0408V35L19.9999 29.5918L10.6794 35V27.0408L1.35892 21.6327L10.6794 16.2245V5.40817L19.9999 0Z" fill="#D90429"/>
+                        <path d="M19.9999 8.16327L13.8471 11.9796L19.9999 15.7959L26.1528 11.9796L19.9999 8.16327Z" fill="white"/>
+                        <path d="M26.1528 23.0204L19.9999 26.8367L13.8471 23.0204L19.9999 19.2041L26.1528 23.0204Z" fill="white"/>
+                    </svg>
+                    <span class="font-extrabold text-2xl text-gray-900">Matrix</span>
+                    <span class="font-bold text-2xl text-red-600">Experts</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-6 xl:space-x-8">
+                    <a href="#hero-section" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Home</a>
+                    <a href="#about" class="font-medium text-gray-700 hover:text-red-600 transition-colors">About Us</a>
+                    <a href="#specialities" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Specialities</a>
+                    <a href="#sectors" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Sectors</a>
+                    <a href="#partners-clients" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Partners</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Careers</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Blog</a>
+                    <a href="#contact" class="font-medium text-gray-700 hover:text-red-600 transition-colors">Contact</a>
+                </nav>
+
+                <!-- CTA & Mobile Toggle -->
+                <div class="flex items-center space-x-4">
+                    <a href="#contact" class="hidden sm:inline-block bg-red-600 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-red-700 transition-all duration-300 transform hover:scale-105">
+                        Get Started
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md text-gray-800">
+                        <span class="sr-only">Open main menu</span>
+                        <div class="space-y-1.5">
+                            <span class="block w-6 h-0.5 bg-gray-800 hamburger-line"></span>
+                            <span class="block w-6 h-0.5 bg-gray-800 hamburger-line"></span>
+                            <span class="block w-4 h-0.5 bg-gray-800 hamburger-line"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-lg absolute top-20 left-0 right-0 z-40">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#hero-section" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Home</a>
+                <a href="#about" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">About Us</a>
+                <a href="#specialities" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Specialities</a>
+                <a href="#sectors" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Sectors</a>
+                <a href="#partners-clients" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Partners</a>
+                <a href="#" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Careers</a>
+                <a href="#" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Blog</a>
+                <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Contact</a>
+                <a href="#contact" class="mobile-nav-link block w-full text-left px-3 py-3 rounded-md text-base font-medium text-white bg-red-600 hover:bg-red-700">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- 1. Hero Section -->
+        <section id="hero-section" class="pt-20 bg-gray-50 flex items-center overflow-hidden">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
+                <!-- Left: Text Content -->
+                <div class="text-center lg:text-left pt-12 lg:pt-0 z-10">
+                    <h1 class="fade-in-up text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+                        Enable <span class="text-red-600">Business Transformation</span>
+                    </h1>
+                    <p class="fade-in-up mt-6 text-lg text-gray-600 max-w-xl mx-auto lg:mx-0" style="transition-delay: 200ms;">
+                        A team of professionals with a vision to enable transformation with focus on innovative and creative solutions, implemented using best practices and cutting-edge technologies.
+                    </p>
+                    <div class="fade-in-up mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start" style="transition-delay: 400ms;">
+                        <a href="#specialities" class="bg-red-600 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-red-700 transition-all duration-300 transform hover:scale-105">
+                            Our Specialities
+                        </a>
+                        <a href="#about" class="bg-gray-200 text-gray-800 px-8 py-3.5 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Right: 3D Animation -->
+                <div class="w-full h-full min-h-[300px] lg:min-h-0">
+                    <div id="hero-canvas-container" class="w-full h-full">
+                        <canvas id="hero-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. About Us & Vision Section -->
+        <section id="about" class="py-20 lg:py-28 bg-white">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+                    <!-- Left: Text Content -->
+                    <div class="lg:col-span-2">
+                        <p class="fade-in-up text-base font-semibold text-red-600 uppercase tracking-wider">About Us</p>
+                        <h2 class="fade-in-up mt-2 text-3xl md:text-4xl font-extrabold text-gray-900" style="transition-delay: 150ms;">
+                            Who We Are
+                        </h2>
+                        <p class="fade-in-up mt-6 text-lg text-gray-600" style="transition-delay: 300ms;">
+                            A team of professionals gathered with a vision to enable businesses transformation with focus on innovative and creative solutions that are designed, implemented and integrated using best practices, cutting edge technologies, smart solutions and partnerships with local and global vendors. We promise change and committed to deliver value that supports safety, security, effeminacy, customer experience, and cost effectiveness.
+                        </p>
+                        <p class="fade-in-up mt-4 text-lg text-gray-600" style="transition-delay: 450ms;">
+                            Collectively, we bring in a diversified experiences, achievements, skills and know how covering all aspects of low current systems including security, network, communication, audio visual, automation, and Smart Control and monitory solutions with knowledge and experiences in digital infrastructure, operation management, and customer experience.
+                        </p>
+                    </div>
+                    
+                    <!-- Right: Vision Card -->
+                    <div class="fade-in-up bg-gray-900 text-white p-8 rounded-xl shadow-2xl" style="transition-delay: 300ms;">
+                        <div class="flex-shrink-0">
+                            <svg width="40" height="35" viewBox="0 0 40 35" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-70">
+                                <path d="M19.9999 0L29.3204 5.40817V16.2245L38.6409 21.6327L29.3204 27.0408V35L19.9999 29.5918L10.6794 35V27.0408L1.35892 21.6327L10.6794 16.2245V5.40817L19.9999 0Z" fill="#D90429"/>
+                                <path d="M19.9999 8.16327L13.8471 11.9796L19.9999 15.7959L26.1528 11.9796L19.9999 8.16327Z" fill="white"/>
+                                <path d="M26.1528 23.0204L19.9999 26.8367L13.8471 23.0204L19.9999 19.2041L26.1528 23.0204Z" fill="white"/>
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-bold text-white uppercase tracking-wider">Our Vision</h3>
+                        <p class="mt-3 text-3xl font-bold text-red-500">
+                            "Driving the future of low current solutions"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Our Specialities (Flip Cards) -->
+        <section id="specialities" class="py-20 lg:py-28 bg-gray-50">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto">
+                    <p class="fade-in-up text-base font-semibold text-red-600 uppercase tracking-wider">Our Specialities</p>
+                    <h2 class="fade-in-up mt-2 text-3xl md:text-4xl font-extrabold text-gray-900" style="transition-delay: 150ms;">
+                        A Full Spectrum of Expertise
+                    </h2>
+                    <p class="fade-in-up mt-4 text-lg text-gray-600" style="transition-delay: 300ms;">
+                        We strongly believe that it is never what you chose, it is how to implement and utilize that solution to the best interest of your business and stakeholders.
+                    </p>
+                </div>
+                
+                <!-- Flip Card Grid -->
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Card 1: Security -->
+                    <div class="fade-in-up flip-card-container" style="transition-delay: 400ms;">
+                        <div class="flip-card">
+                            <!-- Front -->
+                            <div class="flip-card-front">
+                                <img src="images/security-shield.jpg" alt="Security Solutions" class="w-full h-3/5 object-cover">
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <h3 class="text-2xl font-bold text-gray-900">Security</h3>
+                                    <span class="font-medium text-red-600">Click for details &rarr;</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back">
+                                <h3 class="text-2xl font-bold text-red-500 mb-4">Security</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>CCTV</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Access Control</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Biometric Solutions</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Facility Safety and Protection</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Networking -->
+                    <div class="fade-in-up flip-card-container" style="transition-delay: 500ms;">
+                        <div class="flip-card">
+                            <!-- Front -->
+                            <div class="flip-card-front">
+                                <img src="images/networking-grid.jpg" alt="Networking Solutions" class="w-full h-3/5 object-cover">
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <h3 class="text-2xl font-bold text-gray-900">Networking</h3>
+                                    <span class="font-medium text-red-600">Click for details &rarr;</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back">
+                                <h3 class="text-2xl font-bold text-red-500 mb-4">Networking</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Network Design</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Server Rooms & Data Centers</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Cabling and Wiring</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>WiFi & Wireless Solutions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Smart Solutions -->
+                    <div class="fade-in-up flip-card-container" style="transition-delay: 600ms;">
+                        <div class="flip-card">
+                            <!-- Front -->
+                            <div class="flip-card-front">
+                                <img src="images/ai-landscape.jpg" alt="Smart Solutions" class="w-full h-3/5 object-cover">
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <h3 class="text-2xl font-bold text-gray-900">Video, Audio & Smart Solutions</h3>
+                                    <span class="font-medium text-red-600">Click for details &rarr;</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back overflow-y-auto">
+                                <h3 class="text-2xl font-bold text-red-500 mb-4">Smart Solutions</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>IPTV</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Video Conferencing</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Public Addressing</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Automation</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>IP Telephony Systems</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Intercom and Paging</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Support -->
+                    <div class="fade-in-up flip-card-container" style="transition-delay: 400ms;">
+                        <div class="flip-card">
+                            <!-- Front -->
+                            <div class="flip-card-front">
+                                <img src="images/support-lifebuoy.jpg" alt="Support & Sustainability" class="w-full h-3/5 object-cover">
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <h3 class="text-2xl font-bold text-gray-900">Support & Sustainability</h3>
+                                    <span class="font-medium text-red-600">Click for details &rarr;</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back">
+                                <h3 class="text-2xl font-bold text-red-500 mb-4">Support & Sustainability</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Preventive & Corrective Maintenance</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Annual Maintenance Contracts</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>ESG Compliance Support</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Digital & IT -->
+                    <div class="fade-in-up flip-card-container" style="transition-delay: 500ms;">
+                        <div class="flip-card">
+                            <!-- Front -->
+                            <div class="flip-card-front">
+                                <img src="images/digital-cube.jpg" alt="Digital & IT Services" class="w-full h-3/5 object-cover">
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <h3 class="text-2xl font-bold text-gray-900">Digital & IT Services</h3>
+                                    <span class="font-medium text-red-600">Click for details &rarr;</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back overflow-y-auto">
+                                <h3 class="text-2xl font-bold text-red-500 mb-4">Digital & IT Services</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Managed IT Services</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Front End Design & Development</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Network & IT Infrastructure</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>System & Network Administration</li>
+                                    <li class="flex items-center text-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Services through Outsourcing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. What We Do (Process) -->
+        <section id="what-we-do" class="py-20 lg:py-28 bg-white">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto">
+                    <p class="fade-in-up text-base font-semibold text-red-600 uppercase tracking-wider">What We Do</p>
+                    <h2 class="fade-in-up mt-2 text-3xl md:text-4xl font-extrabold text-gray-900" style="transition-delay: 150ms;">
+                        The Solution Cycle
+                    </h2>
+                    <p class="fade-in-up mt-4 text-lg text-gray-600" style="transition-delay: 300ms;">
+                        Our scope covers the whole or any part of the solution cycle, from assessment and evaluation to implementation, integration, and continuous support.
+                    </p>
+                </div>
+                
+                <!-- Process Grid -->
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+                    <!-- Step 1 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-3xl font-extrabold text-red-600">01</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Assessment</h3>
+                        <p class="mt-1 text-sm text-gray-600">Gap analysis and evaluation.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow" style="transition-delay: 100ms;">
+                        <div class="text-3xl font-extrabold text-red-600">02</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Design & Plan</h3>
+                        <p class="mt-1 text-sm text-gray-600">Customizing the solution.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow" style="transition-delay: 200ms;">
+                        <div class="text-3xl font-extrabold text-red-600">03</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Supply & Install</h3>
+                        <p class="mt-1 text-sm text-gray-600">Using cutting-edge tech.</p>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow" style="transition-delay: 300ms;">
+                        <div class="text-3xl font-extrabold text-red-600">04</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Implement & Train</h3>
+                        <p class="mt-1 text-sm text-gray-600">Ensuring user adoption.</p>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow" style="transition-delay: 400ms;">
+                        <div class="text-3xl font-extrabold text-red-600">05</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Integrate</h3>
+                        <p class="mt-1 text-sm text-gray-600">Connecting your systems.</p>
+                    </div>
+                    <!-- Step 6 -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow" style="transition-delay: 500ms;">
+                        <div class="text-3xl font-extrabold text-red-600">06</div>
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">Support & Sustain</h3>
+                        <p class="mt-1 text-sm text-gray-600">Annual maintenance contracts.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 5. Why Matrix Experts -->
+        <section id="why-us" class="py-20 lg:py-28 bg-gray-900 text-white">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto">
+                    <p class="fade-in-up text-base font-semibold text-red-500 uppercase tracking-wider">Why Matrix Experts</p>
+                    <h2 class="fade-in-up mt-2 text-3xl md:text-4xl font-extrabold text-white" style="transition-delay: 150ms;">
+                        Our Value Proposition
+                    </h2>
+                </div>
+                
+                <!-- Benefits Grid -->
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Benefit 1 -->
+                    <div class="fade-in-up flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16v4m-2-2h4m5 16v4m-2-2h4M17 3l-4.5 5.5L7 3m10 18l-4.5-5.5L7 21" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Commitment to Value</h3>
+                            <p class="mt-1 text-gray-300">We are committed to delivering tangible value that supports your business goals.</p>
+                        </div>
+                    </div>
+                    <!-- Benefit 2 -->
+                    <div class="fade-in-up flex items-start space-x-4" style="transition-delay: 100ms;">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Strong Partnerships</h3>
+                            <p class="mt-1 text-gray-300">We leverage local and global vendor partnerships to bring you the best solutions.</p>
+                        </div>
+                    </div>
+                    <!-- Benefit 3 -->
+                    <div class="fade-in-up flex items-start space-x-4" style="transition-delay: 200ms;">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Experience & Knowledge</h3>
+                            <p class="mt-1 text-gray-300">Diversified experience and skills covering all aspects of low current systems.</p>
+                        </div>
+                    </div>
+                    <!-- Benefit 4 -->
+                    <div class="fade-in-up flex items-start space-x-4" style="transition-delay: 300ms;">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Agile Project Management</h3>
+                            <p class="mt-1 text-gray-300">We adapt to your needs with agile solutions that fit your requirements.</p>
+                        </div>
+                    </div>
+                    <!-- Benefit 5 -->
+                    <div class="fade-in-up flex items-start space-x-4" style="transition-delay: 400ms;">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Understanding of Needs</h3>
+                            <p class="mt-1 text-gray-300">We listen first to understand the needs of your business and stakeholders.</p>
+                        </div>
+                    </div>
+                    <!-- Benefit 6 -->
+                    <div class="fade-in-up flex items-start space-x-4" style="transition-delay: 500ms;">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-800 text-red-500 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Proven Track Record</h3>
+                            <p class="mt-1 text-gray-300">Our team has a history of proven achievements and success stories.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="mt-20 text-center">
+                    <h3 class="text-base font-semibold text-gray-400 uppercase tracking-wider">Certified & Compliant</h3>
+                    <div class="mt-6 flex justify-center items-center space-x-12">
+                        <div class="fade-in-up" style="transition-delay: 100ms;">
+                            <img src="https://placehold.co/100x60/9CA3AF/FFFFFF?text=ISO" alt="ISO Certified" class="h-12">
+                            <p class="mt-2 text-sm text-gray-300">ISO Certified</p>
+                        </div>
+                        <div class="fade-in-up" style="transition-delay: 200ms;">
+                            <img src="https://placehold.co/100x60/9CA3AF/FFFFFF?text=DEFENSE" alt="Defense Certified" class="h-12">
+                            <p class="mt-2 text-sm text-gray-300">Defense Certified</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Sectors We Serve (with Count-Up Stats) -->
+        <section id="sectors" class="py-20 lg:py-28 bg-white">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto">
+                    <p class="fade-in-up text-base font-semibold text-red-600 uppercase tracking-wider">Sectors We Serve</p>
+                    <h2 class="fade-in-up mt-2 text-3xl md:text-4xl font-extrabold text-gray-900" style="transition-delay: 150ms;">
+                        Expertise Across Key Sectors
+                    </h2>
+                    <p class="fade-in-up mt-4 text-lg text-gray-600" style="transition-delay: 300ms;">
+                        We empower leaders across vital industries including oil and gas, education, logistics, health, hospitality, retail, telecom, tech, and more.
+                    </p>
+                </div>
+
+                <!-- Industries Grid -->
+                <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+                    <!-- Industry 1: Oil & Gas -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl transition-all duration-300 hover:shadow-lg">
+                        <span class="text-5xl font-extrabold text-red-600 count-up" data-target="99">0</span><span class="text-5xl font-extrabold text-red-600">%</span>
+                        <p class="mt-2 text-lg font-semibold text-gray-900">Oil & Gas Uptime</p>
+                        <p class="mt-1 text-sm text-gray-600">Improving operational efficiency.</p>
+                    </div>
+                    <!-- Industry 2: Education -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl transition-all duration-300 hover:shadow-lg" style="transition-delay: 100ms;">
+                        <span class="text-5xl font-extrabold text-red-600 count-up" data-target="100">0</span><span class="text-5xl font-extrabold text-red-600">+</span>
+                        <p class="mt-2 text-lg font-semibold text-gray-900">Education Institutions</p>
+                        <p class="mt-1 text-sm text-gray-600">Enabling student innovation.</p>
+                    </div>
+                    <!-- Industry 3: Logistics -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl transition-all duration-300 hover:shadow-lg" style="transition-delay: 200ms;">
+                        <span class="text-5xl font-extrabold text-red-600 count-up" data-target="150">0</span><span class="text-5xl font-extrabold text-red-600">+</span>
+                        <p class="mt-2 text-lg font-semibold text-gray-900">Logistics Projects</p>
+                        <p class="mt-1 text-sm text-gray-600">Optimizing supply chains.</p>
+                    </div>
+                    <!-- Industry 4: Healthcare -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl transition-all duration-300 hover:shadow-lg" style="transition-delay: 300ms;">
+                        <span class="text-5xl font-extrabold text-red-600 count-up" data-target="30">0</span><span class="text-5xl font-extrabold text-red-600">+</span>
+                        <p class="mt-2 text-lg font-semibold text-gray-900">Healthcare Partners</p>
+                        <p class="mt-1 text-sm text-gray-600">Impacting healthy lives.</p>
+                    </div>
+                    <!-- Industry 5: Hospitality -->
+                    <div class="fade-in-up text-center p-6 bg-gray-50 rounded-xl transition-all duration-300 hover:shadow-lg" style="transition-delay: 400ms;">
+                        <span class="text-5xl font-extrabold text-red-600 count-up" data-target="50">0</span><span class="text-5xl font-extrabold text-red-600">+</span>
+                        <p class="mt-2 text-lg font-semibold text-gray-900">Hospitality Venues</p>
+                        <p class="mt-1 text-sm text-gray-600">Enhancing guest experiences.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Client & Partner Logo Wall -->
+        <section id="partners-clients" class="py-20 lg:py-28 bg-gray-100 overflow-hidden">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="fade-in-up text-3xl md:text-4xl font-extrabold text-gray-900">
+                        Trusted by Customers & Partners
+                    </h2>
+                    <p class="fade-in-up mt-4 text-lg text-gray-600" style="transition-delay: 150ms;">
+                        We are proud to collaborate with a diverse range of clients and technology partners to deliver exceptional results.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Infinite Logo Marquee -->
+            <div class="mt-16 relative flex flex-col gap-8 overflow-hidden">
+                <!-- Row 1 (Clients) -->
+                <div class="flex flex-nowrap w-max animate-scroll-x">
+                    <!-- Use placeholder images, repeating as needed -->
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=SALTO" alt="Client Logo 1" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=The+Red+Sea" alt="Client Logo 2" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Saudi+Aramco" alt="Client Logo 3" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Jana+Marine" alt="Client Logo 4" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=ALRASHED" alt="Client Logo 5" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=AJ+Saudi" alt="Client Logo 6" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=GCC+Lab" alt="Client Logo 7" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <!-- Duplicate set for infinite loop -->
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=SALTO" alt="Client Logo 1" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=The+Red+Sea" alt="Client Logo 2" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Saudi+Aramco" alt="Client Logo 3" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Jana+Marine" alt="Client Logo 4" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=ALRASHED" alt="Client Logo 5" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=AJ+Saudi" alt="Client Logo 6" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=GCC+Lab" alt="Client Logo 7" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                </div>
+                <!-- Row 2 (Partners) - scrolling in reverse -->
+                <div class="flex flex-nowrap w-max animate-scroll-x" style="animation-direction: reverse; animation-duration: 30s;">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=SOPHOS" alt="Partner Logo 1" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=MICRO+FOCUS" alt="Partner Logo 2" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=AVAYA" alt="Partner Logo 3" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Acronis" alt="Partner Logo 4" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Partner+Five" alt="Partner Logo 5" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Partner+Six" alt="Partner Logo 6" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <!-- Duplicate set for infinite loop -->
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=SOPHOS" alt="Partner Logo 1" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=MICRO+FOCUS" alt="Partner Logo 2" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=AVAYA" alt="Partner Logo 3" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Acronis" alt="Partner Logo 4" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Partner+Five" alt="Partner Logo 5" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                    <img src="https://placehold.co/200x80/ffffff/cccccc?text=Partner+Six" alt="Partner Logo 6" class="h-12 md:h-16 mx-8 my-4 grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. CTA Section -->
+        <section id="contact" class="py-20 lg:py-28 bg-gray-900 text-white relative overflow-hidden">
+            <!-- Particle Animation Canvas -->
+            <canvas id="cta-canvas"></canvas>
+
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left: Text Content -->
+                    <div class="text-center lg:text-left">
+                        <h2 class="fade-in-up text-3xl md:text-4xl font-extrabold text-white">
+                            Are You Ready to Accelerate Your Business?
+                        </h2>
+                        <p class="fade-in-up mt-4 text-lg text-gray-300 max-w-lg mx-auto lg:mx-0" style="transition-delay: 150ms;">
+                            Matrix Experts is a dedicated and experienced IT Systems Integrator. Let's discuss how our full IT solutions can help you achieve your goals.
+                        </p>
+                        <div class="fade-in-up mt-8" style="transition-delay: 300ms;">
+                            <a href="#contact-form" class="inline-block bg-red-600 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-red-700 transition-all duration-300 transform hover:scale-105">
+                                Get Started
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Contact Form -->
+                    <div id="contact-form" class="fade-in-up bg-white p-8 rounded-xl shadow-2xl" style="transition-delay: 200ms;">
+                        <h3 class="text-2xl font-bold text-gray-900">Send Us a Message</h3>
+                        <form action="#" method="POST" class="mt-6 space-y-5">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" name="name" id="name" autocomplete="name" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 text-gray-900">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" name="email" id="email" autocomplete="email" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 text-gray-900">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                                <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 text-gray-900"></textarea>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all">
+                                    Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <!-- Column 1: Logo & Socials -->
+                <div>
+                    <!-- White Logo for dark background -->
+                    <a href="#" class="flex items-center space-x-2">
+                        <svg width="40" height="35" viewBox="0 0 40 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.9999 0L29.3204 5.40817V16.2245L38.6409 21.6327L29.3204 27.0408V35L19.9999 29.5918L10.6794 35V27.0408L1.35892 21.6327L10.6794 16.2245V5.40817L19.9999 0Z" fill="#D90429"/>
+                            <path d="M19.9999 8.16327L13.8471 11.9796L19.9999 15.7959L26.1528 11.9796L19.9999 8.16327Z" fill="white"/>
+                            <path d="M26.1528 23.0204L19.9999 26.8367L13.8471 23.0204L19.9999 19.2041L26.1528 23.0204Z" fill="white"/>
+                        </svg>
+                        <span class="font-extrabold text-2xl text-white">Matrix</span>
+                        <span class="font-bold text-2xl text-red-600">Experts</span>
+                    </a>
+                    <p class="mt-4 text-sm">
+                        Enabling business transformation with innovative and creative solutions.
+                    </p>
+                    <!-- Social Icons -->
+                    <div class="flex space-x-5 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <span class="sr-only">Facebook</span>
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <span class="sr-only">Twitter</span>
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <span class="sr-only">LinkedIn</span>
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h3 class="text-sm font-semibold text-white tracking-wider uppercase">Quick Links</h3>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="#hero-section" class="text-base hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-base hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#specialities" class="text-base hover:text-white transition-colors">Specialities</a></li>
+                        <li><a href="#sectors" class="text-base hover:text-white transition-colors">Sectors</a></li>
+                        <li><a href="#partners-clients" class="text-base hover:text-white transition-colors">Partners & Customers</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3: Company -->
+                <div>
+                    <h3 class="text-sm font-semibold text-white tracking-wider uppercase">Company</h3>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="#about" class="text-base hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-base hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-base hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-base hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 4: Contact Info -->
+                <div>
+                    <h3 class="text-sm font-semibold text-white tracking-wider uppercase">Get in Touch</h3>
+                    <ul class="mt-4 space-y-3">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>123 Tech Avenue, Riyadh, <br>Saudi Arabia</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C6.477 18 2 13.523 2 8V3z" />
+                            </svg>
+                            <span>+966 11 123 4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M2.003 5.884L10 11.882l7.997-5.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                              <path d="M18 8.118l-8 6-8-6V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                            </svg>
+                            <span>info@matrixexperts.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="mt-12 border-t border-gray-800 pt-8 text-center">
+                <p class="text-sm">&copy; <span id="current-year"></span> Matrix Experts. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === Set Current Year in Footer ===
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // === Mobile Menu Toggle ===
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+                menuBtn.setAttribute('aria-expanded', !isExpanded);
+                menuBtn.classList.toggle('hamburger-active');
+                mobileMenu.classList.toggle('hidden');
+            });
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    menuBtn.classList.remove('hamburger-active');
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // === Specialities Flip Card Switching ===
+            const flipCards = document.querySelectorAll('.flip-card-container');
+            flipCards.forEach(cardContainer => {
+                cardContainer.addEventListener('click', (e) => {
+                    // We check this to prevent clicks on links inside the card from triggering flip
+                    if (e.target.tagName !== 'A') {
+                        const flipCard = cardContainer.querySelector('.flip-card');
+                        if (flipCard) {
+                            flipCard.classList.toggle('is-flipped');
+                        }
+                    }
+                });
+            });
+
+            // === Intersection Observer for Scroll Animations ===
+            const animatedElements = document.querySelectorAll('.fade-in-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Optional: Unobserve after animation
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+            animatedElements.forEach(el => observer.observe(el));
+            
+            // === Count-Up Animation ===
+            const countUpElements = document.querySelectorAll('.count-up');
+            const countUpObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        entry.target.classList.add('animated');
+                        const target = +entry.target.getAttribute('data-target');
+                        let count = 0;
+                        const duration = 2000; // 2 seconds
+                        const frameRate = 30; // frames per second
+                        const increment = target / (duration / 1000 * frameRate);
+                        
+                        const updateCount = () => {
+                            count += increment;
+                            if (count < target) {
+                                entry.target.innerText = Math.ceil(count);
+                                setTimeout(updateCount, 1000 / frameRate);
+                            } else {
+                                entry.target.innerText = target;
+                            }
+                        };
+                        updateCount();
+                    }
+                });
+            }, { threshold: 0.5 });
+            countUpElements.forEach(el => countUpObserver.observe(el));
+
+            // === 3D Hero Animation (three.js) ===
+            try {
+                let scene, camera, renderer, particles;
+                const container = document.getElementById('hero-canvas-container');
+                const canvas = document.getElementById('hero-canvas');
+                
+                function initHero3D() {
+                    scene = new THREE.Scene();
+                    
+                    const fov = 75;
+                    const aspect = container.clientWidth / container.clientHeight;
+                    const near = 0.1;
+                    const far = 1000;
+                    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+                    camera.position.z = 30;
+
+                    renderer = new THREE.WebGLRenderer({ 
+                        canvas: canvas,
+                        alpha: true // Transparent background
+                    });
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    
+                    // Particle Geometry
+                    const particleCount = 5000;
+                    const particlesGeometry = new THREE.BufferGeometry();
+                    const posArray = new Float32Array(particleCount * 3);
+                    
+                    for(let i = 0; i < particleCount * 3; i++) {
+                        posArray[i] = (Math.random() - 0.5) * 50;
+                    }
+                    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                    
+                    // Particle Material
+                    const particleMaterial = new THREE.PointsMaterial({
+                        size: 0.05,
+                        color: 0xD90429, // Red accent
+                        transparent: true,
+                        blending: THREE.AdditiveBlending
+                    });
+                    
+                    particles = new THREE.Points(particlesGeometry, particleMaterial);
+                    scene.add(particles);
+
+                    // Add some white particles
+                    const whiteParticleMaterial = new THREE.PointsMaterial({
+                        size: 0.05,
+                        color: 0x888888, // Grey/white
+                        transparent: true,
+                        blending: THREE.AdditiveBlending
+                    });
+                    const whiteParticles = new THREE.Points(particlesGeometry.clone(), whiteParticleMaterial);
+                    whiteParticles.rotation.x = 0.5;
+                    scene.add(whiteParticles);
+
+                    window.addEventListener('resize', onHeroResize);
+                    document.addEventListener('mousemove', onHeroMouseMove);
+                    
+                    animateHero();
+                }
+
+                let mouseX = 0;
+                let mouseY = 0;
+                function onHeroMouseMove(event) {
+                    mouseX = (event.clientX - window.innerWidth / 2) / 100;
+                    mouseY = (event.clientY - window.innerHeight / 2) / 100;
+                }
+
+                function onHeroResize() {
+                    if (container && renderer) {
+                        const width = container.clientWidth;
+                        const height = container.clientHeight;
+                        renderer.setSize(width, height);
+                        camera.aspect = width / height;
+                        camera.updateProjectionMatrix();
+                    }
+                }
+
+                function animateHero() {
+                    requestAnimationFrame(animateHero);
+                    
+                    // Animate particles
+                    particles.rotation.y += 0.0005;
+                    particles.rotation.x += 0.0002;
+                    
+                    // Mouse move interaction
+                    camera.position.x += (mouseX - camera.position.x) * 0.01;
+                    camera.position.y += (-mouseY - camera.position.y) * 0.01;
+                    camera.lookAt(scene.position);
+                    
+                    renderer.render(scene, camera);
+                }
+
+                if (container && canvas && typeof THREE !== 'undefined') {
+                    initHero3D();
+                } else {
+                    console.error("Hero 3D dependencies not loaded.");
+                }
+            } catch (e) {
+                console.error("Error initializing 3D Hero:", e);
+                // Fallback: hide the canvas container if it fails
+                const canvasContainer = document.getElementById('hero-canvas-container');
+                if(canvasContainer) canvasContainer.style.display = 'none';
+            }
+            
+            // === CTA Particle Animation (Canvas 2D) ===
+            try {
+                const ctaCanvas = document.getElementById('cta-canvas');
+                const ctx = ctaCanvas.getContext('2d');
+                let ctaParticles = [];
+                
+                function resizeCtaCanvas() {
+                    ctaCanvas.width = ctaCanvas.offsetWidth;
+                    ctaCanvas.height = ctaCanvas.offsetHeight;
+                }
+                
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * ctaCanvas.width;
+                        this.y = Math.random() * ctaCanvas.height;
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = (Math.random() - 0.5) * 0.5;
+                        this.size = Math.random() * 2 + 0.5;
+                        this.alpha = Math.random() * 0.5 + 0.2;
+                    }
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        if (this.x < 0 || this.x > ctaCanvas.width) this.vx *= -1;
+                        if (this.y < 0 || this.y > ctaCanvas.height) this.vy *= -1;
+                    }
+                    draw() {
+                        ctx.fillStyle = `rgba(217, 4, 41, ${this.alpha})`; // Red color
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                
+                function initCtaParticles() {
+                    resizeCtaCanvas();
+                    ctaParticles = [];
+                    let numParticles = Math.floor(ctaCanvas.width / 15);
+                    if (numParticles < 50) numParticles = 50; // ensure some particles
+                    if (numParticles > 200) numParticles = 200; // cap particles
+                    for(let i = 0; i < numParticles; i++) {
+                        ctaParticles.push(new Particle());
+                    }
+                }
+                
+                function animateCtaParticles() {
+                    if (ctx) {
+                        ctx.clearRect(0, 0, ctaCanvas.width, ctaCanvas.height);
+                        ctaParticles.forEach(p => {
+                            p.update();
+                            p.draw();
+                        });
+                    }
+                    requestAnimationFrame(animateCtaParticles);
+                }
+                
+                if (ctaCanvas && ctaCanvas.getContext) {
+                    initCtaParticles();
+                    animateCtaParticles();
+                    window.addEventListener('resize', initCtaParticles);
+                }
+            } catch (e) {
+                console.error("Error initializing CTA Canvas:", e);
+                const ctaCanvas = document.getElementById('cta-canvas');
+                if(ctaCanvas) ctaCanvas.style.display = 'none';
+            }
+
+        });
+    </script>
+
+</body>
+</html>
